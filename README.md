@@ -1,6 +1,6 @@
-# ROTZ
+# ROTZ AI Builder
 
-ROTZ is an AI builder based on Bolt DIY, rebranded and adapted to run entirely self‑hosted with a local database. It provides:
+ROTZ AI Builder is based on Bolt DIY, rebranded and adapted to run entirely self‑hosted with a local database. It provides:
 
 - Local, containerized deployment (Ubuntu 24.04 ready)
 - Built‑in auth with cookie sessions, roles (admin/user/blocked), and whitelist support
