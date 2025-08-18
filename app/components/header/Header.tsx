@@ -19,8 +19,7 @@ export function Header() {
         <div className="i-ph:sidebar-simple-duotone text-xl" />
         <a href="/" className="text-2xl font-semibold text-accent flex items-center">
           {/* ROTZ logo */}
-          <img src="/logo-light-styled.png" alt="ROTZ" className="w-[90px] inline-block dark:hidden" />
-          <img src="/logo-dark-styled.png" alt="ROTZ" className="w-[90px] inline-block hidden dark:block" />
+          <img src="/favicon.svg" alt="ROTZ" className="w-[32px] h-[32px] inline-block" />
         </a>
       </div>
       {chat.started && ( // Display ChatDescription and HeaderActionButtons only when the chat has started.
