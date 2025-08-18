@@ -67,6 +67,30 @@ ensure_data_dir(){
   chmod 700 "$DATA_DIR" || true
 }
 
+ensure_env_file(){
+  # Create an env file to silence compose warnings and provide placeholders
+  local env_file="${REPO_DIR}/.env.local"
+  if [[ ! -f "$env_file" ]]; then
+    cat > "$env_file" <<EOF
+# Provider keys (optional). Leave blank or fill as needed.
+OPENAI_API_KEY=
+ANTHROPIC_API_KEY=
+GROQ_API_KEY=
+OPEN_ROUTER_API_KEY=
+GOOGLE_GENERATIVE_AI_API_KEY=
+HuggingFace_API_KEY=
+TOGETHER_API_KEY=
+XAI_API_KEY=
+TOGETHER_API_BASE_URL=
+OLLAMA_API_BASE_URL=
+AWS_BEDROCK_CONFIG=
+# App tuning (optional)
+VITE_LOG_LEVEL=debug
+DEFAULT_NUM_CTX=32768
+EOF
+  fi
+}
+
 check_container_conflicts(){
   local in_use
   in_use=$(docker ps --format '{{.Names}}' | grep -E "^${APP_NAME}(-prod)?$" || true)
@@ -245,6 +269,7 @@ main(){
     detect_existing_compose_stacks
     check_container_conflicts
     choose_project_name
+    ensure_env_file
     build_and_start
     enable_autostart
     print_summary
