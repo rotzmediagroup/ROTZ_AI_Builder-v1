@@ -8,8 +8,8 @@ import { requireUser } from '~/lib/server/auth';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'ROTZ' },
-    { name: 'description', content: 'Talk with ROTZ, your AI builder' },
+    { title: 'ROTZ AI Builder' },
+    { name: 'description', content: 'Talk with ROTZ AI Builder, your AI builder' },
   ];
 };
 
