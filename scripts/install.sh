@@ -165,6 +165,75 @@ print_summary(){
 }
 
 # -----------------------------
+# Wizard utilities
+# -----------------------------
+prompt_yes_no(){
+  local prompt="$1" default_yes=${2:-1} ans
+  local suffix="[Y/n]"; [[ $default_yes -eq 0 ]] && suffix="[y/N]"
+  while true; do
+    read -r -p "$prompt $suffix " ans < /dev/tty || ans=""
+    ans=${ans,,}
+    if [[ -z "$ans" ]]; then
+      [[ $default_yes -eq 1 ]] && return 0 || return 1
+    elif [[ "$ans" =~ ^y(es)?$ ]]; then return 0
+    elif [[ "$ans" =~ ^n(o)?$ ]]; then return 1
+    fi
+  done
+}
+
+prompt_port(){
+  local suggested="$1" input
+  read -r -p "Choose app port (default $suggested): " input < /dev/tty || input=""
+  input=${input// /}
+  if [[ -z "$input" ]]; then echo "$suggested"; return; fi
+  if [[ "$input" =~ ^[0-9]+$ ]]; then echo "$input"; else echo "$suggested"; fi
+}
+
+wizard(){
+  info "Welcome to the ROTZ Installer Wizard"
+  local want_docker=1
+  if require_cmd docker; then
+    if prompt_yes_no "Install using Docker (recommended)?" 1; then want_docker=1; else want_docker=0; fi
+  else
+    info "Docker is not installed; it will be installed if you choose Docker."
+    if prompt_yes_no "Install using Docker (recommended)?" 1; then want_docker=1; else want_docker=0; fi
+  fi
+
+  if [[ $want_docker -eq 1 ]]; then
+    # Show running containers if any
+    if require_cmd docker; then
+      local running
+      running=$(docker ps --format '{{.Names}}' | wc -l || echo 0)
+      if [[ "$running" -gt 0 ]]; then
+        info "Running containers detected:"
+        docker ps --format '  - {{.Names}} ({{.Ports}})'
+        if ! prompt_yes_no "Proceed with installation alongside existing containers?" 1; then
+          err "Installation cancelled by user."
+          exit 1
+        fi
+      fi
+    fi
+    # Suggest a free port
+    local free
+    free=$(pick_free_port "$DEFAULT_PORT")
+    local chosen
+    chosen=$(prompt_port "$free")
+    export APP_PORT="$chosen"
+    echo "Using APP_PORT=$APP_PORT"
+    echo "Mode: Docker"
+    INSTALL_MODE=docker
+  else
+    # Local mode
+    local chosen
+    chosen=$(prompt_port "$DEFAULT_PORT")
+    export APP_PORT="$chosen"
+    echo "Using APP_PORT=$APP_PORT"
+    echo "Mode: Local"
+    INSTALL_MODE=local
+  fi
+}
+
+# -----------------------------
 # Local (bare-metal) installation
 # -----------------------------
 install_node(){
@@ -259,7 +328,13 @@ prompt_mode(){
 
 main(){
   info "Starting ROTZ installer"
-  mode=$(prompt_mode "${1:-}")
+  local mode
+  if [[ -t 0 && -z "${INSTALL_MODE:-}" && -z "${1:-}" ]]; then
+    wizard
+    mode="$INSTALL_MODE"
+  else
+    mode=$(prompt_mode "${1:-}")
+  fi
   ensure_data_dir
   choose_port
 
