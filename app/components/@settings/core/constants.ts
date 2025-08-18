@@ -12,6 +12,7 @@ export const TAB_ICONS: Record<TabType, string> = {
   connection: 'i-ph:wifi-high',
   'event-logs': 'i-ph:list-bullets',
   mcp: 'i-ph:wrench',
+  users: 'i-ph:users',
 };
 
 export const TAB_LABELS: Record<TabType, string> = {
@@ -26,6 +27,7 @@ export const TAB_LABELS: Record<TabType, string> = {
   connection: 'Connection',
   'event-logs': 'Event Logs',
   mcp: 'MCP Servers',
+  users: 'Users',
 };
 
 export const TAB_DESCRIPTIONS: Record<TabType, string> = {
@@ -40,6 +42,7 @@ export const TAB_DESCRIPTIONS: Record<TabType, string> = {
   connection: 'Check connection status and settings',
   'event-logs': 'View system events and logs',
   mcp: 'Configure MCP (Model Context Protocol) servers',
+  users: 'Administer users, roles, and access',
 };
 
 export const DEFAULT_TAB_CONFIG = [
@@ -55,6 +58,8 @@ export const DEFAULT_TAB_CONFIG = [
   { id: 'profile', visible: true, window: 'user' as const, order: 8 },
   { id: 'service-status', visible: true, window: 'user' as const, order: 9 },
   { id: 'settings', visible: true, window: 'user' as const, order: 10 },
+  // Admin-only tab, will be conditionally shown in UI when role=admin
+  { id: 'users', visible: false, window: 'user' as const, order: 11 },
 
   // User Window Tabs (In dropdown, initially hidden)
 ];

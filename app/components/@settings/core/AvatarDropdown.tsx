@@ -2,6 +2,7 @@ import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { motion } from 'framer-motion';
 import { useStore } from '@nanostores/react';
 import { classNames } from '~/utils/classNames';
+import { useEffect, useState } from 'react';
 import { profileStore } from '~/lib/stores/profile';
 import type { TabType, Profile } from './types';
 
@@ -17,6 +18,13 @@ interface AvatarDropdownProps {
 
 export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
   const profile = useStore(profileStore) as Profile;
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/admin/users', { method: 'HEAD' })
+      .then((res) => setIsAdmin(res.ok))
+      .catch(() => setIsAdmin(false));
+  }, []);
 
   return (
     <DropdownMenu.Root>
@@ -133,6 +141,23 @@ export const AvatarDropdown = ({ onSelectTab }: AvatarDropdownProps) => {
             Service Status
             <BetaLabel />
           </DropdownMenu.Item>
+          {isAdmin && (
+            <DropdownMenu.Item
+              className={classNames(
+                'flex items-center gap-2 px-4 py-2.5',
+                'text-sm text-gray-700 dark:text-gray-200',
+                'hover:bg-purple-50 dark:hover:bg-purple-500/10',
+                'hover:text-purple-500 dark:hover:text-purple-400',
+                'cursor-pointer transition-all duration-200',
+                'outline-none',
+                'group',
+              )}
+              onClick={() => onSelectTab('users')}
+            >
+              <div className="i-ph:users w-4 h-4 text-gray-400 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors" />
+              Users
+            </DropdownMenu.Item>
+          )}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>

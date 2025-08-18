@@ -1,15 +1,26 @@
-import { json, type MetaFunction } from '@remix-run/cloudflare';
+import { json, redirect, type MetaFunction, type LoaderFunctionArgs } from '@remix-run/cloudflare';
 import { ClientOnly } from 'remix-utils/client-only';
 import { BaseChat } from '~/components/chat/BaseChat';
 import { Chat } from '~/components/chat/Chat.client';
 import { Header } from '~/components/header/Header';
 import BackgroundRays from '~/components/ui/BackgroundRays';
+import { requireUser } from '~/lib/server/auth';
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Bolt' }, { name: 'description', content: 'Talk with Bolt, an AI assistant from StackBlitz' }];
+  return [
+    { title: 'ROTZ' },
+    { name: 'description', content: 'Talk with ROTZ, your AI builder' },
+  ];
 };
 
-export const loader = () => json({});
+export const loader = async ({ context, request }: LoaderFunctionArgs) => {
+  try {
+    await requireUser(context, request);
+    return json({});
+  } catch {
+    return redirect('/login');
+  }
+};
 
 /**
  * Landing page component for Bolt

@@ -7,6 +7,13 @@ interface Env {
   HuggingFace_API_KEY: string;
   OPEN_ROUTER_API_KEY: string;
   OLLAMA_API_BASE_URL: string;
+  // Supabase configuration
+  SUPABASE_URL: string;
+  SUPABASE_ANON_KEY: string;
+  SUPABASE_SERVICE_ROLE_KEY: string;
+  // App configuration
+  API_KEY_ENCRYPTION_SECRET: string;
+  WHITELIST_ONLY?: string;
   OPENAI_LIKE_API_KEY: string;
   OPENAI_LIKE_API_BASE_URL: string;
   TOGETHER_API_KEY: string;

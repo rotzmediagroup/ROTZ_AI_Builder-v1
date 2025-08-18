@@ -26,6 +26,7 @@ import CloudProvidersTab from '~/components/@settings/tabs/providers/cloud/Cloud
 import ServiceStatusTab from '~/components/@settings/tabs/providers/status/ServiceStatusTab';
 import LocalProvidersTab from '~/components/@settings/tabs/providers/local/LocalProvidersTab';
 import McpTab from '~/components/@settings/tabs/mcp/McpTab';
+import AdminPanel from '~/components/@settings/tabs/users/AdminPanel.client';
 
 interface ControlPanelProps {
   open: boolean;
@@ -142,6 +143,8 @@ export const ControlPanel = ({ open, onClose }: ControlPanelProps) => {
         return <ServiceStatusTab />;
       case 'mcp':
         return <McpTab />;
+      case 'users':
+        return <AdminPanel />;
       default:
         return null;
     }

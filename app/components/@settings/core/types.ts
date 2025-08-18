@@ -13,7 +13,8 @@ export type TabType =
   | 'service-status'
   | 'connection'
   | 'event-logs'
-  | 'mcp';
+  | 'mcp'
+  | 'users';
 
 export type WindowType = 'user' | 'developer';
 

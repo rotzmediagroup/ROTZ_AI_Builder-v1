@@ -82,6 +82,16 @@ export const APIKeyManager: React.FC<APIKeyManagerProps> = ({ provider, apiKey, 
     const newKeys = { ...currentKeys, [provider.name]: tempKey };
     Cookies.set('apiKeys', JSON.stringify(newKeys));
 
+    // Also persist to server database (best effort)
+    fetch('/api/user/api-keys', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ provider: provider.name, apiKey: tempKey }),
+      credentials: 'include',
+    }).catch(() => {
+      // Ignore network errors silently; cookies will still work
+    });
+
     setIsEditing(false);
   };
 

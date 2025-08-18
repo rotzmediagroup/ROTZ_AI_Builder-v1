@@ -1,4 +1,5 @@
 import { json } from '@remix-run/cloudflare';
+import { requireUser } from '~/lib/server/auth';
 import { LLMManager } from '~/lib/modules/llm/manager';
 import type { ModelInfo } from '~/lib/modules/llm/types';
 import type { ProviderInfo } from '~/types/model';
@@ -51,6 +52,7 @@ export async function loader({
     };
   };
 }): Promise<Response> {
+  await requireUser(context as any, request);
   const llmManager = LLMManager.getInstance(context.cloudflare?.env);
 
   // Get client side maintained API keys and provider settings from cookies

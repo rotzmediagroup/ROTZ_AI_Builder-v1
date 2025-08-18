@@ -6,13 +6,14 @@ services:
       dockerfile: Dockerfile
       target: bolt-ai-production
     ports:
-      - '5173:5173'
+      - '${APP_PORT:-3000}:3000'
     env_file: '.env.local'
     environment:
       - NODE_ENV=production
       - COMPOSE_PROFILES=production
       # No strictly needed but serving as hints for Coolify
-      - PORT=5173
+      - PORT=3000
+      - DB_DIR=/data
       - GROQ_API_KEY=${GROQ_API_KEY}
       - HuggingFace_API_KEY=${HuggingFace_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
@@ -29,7 +30,10 @@ services:
       - RUNNING_IN_DOCKER=true
     extra_hosts:
       - 'host.docker.internal:host-gateway'
-    command: pnpm run dockerstart
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+    command: pnpm run start:node
     profiles:
       - production
 

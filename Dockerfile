@@ -57,7 +57,10 @@ RUN mkdir -p /root/.config/.wrangler && \
 
 RUN pnpm run build
 
-CMD [ "pnpm", "run", "dockerstart"]
+# Use remix-serve with Node, expose 3000
+EXPOSE 3000
+ENV DB_DIR=/data
+CMD [ "pnpm", "run", "start:node" ]
 
 # Development image
 FROM base AS bolt-ai-development
