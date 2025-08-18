@@ -17,8 +17,8 @@ import xtermStyles from '@xterm/xterm/css/xterm.css?url';
 import 'virtual:uno.css';
 
 export const links: LinksFunction = () => [
-  { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
-  { rel: 'apple-touch-icon', href: '/favicon.svg' },
+  { rel: 'icon', href: '/favicon.png', type: 'image/png' },
+  { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
   { rel: 'stylesheet', href: reactToastifyStyles },
   { rel: 'stylesheet', href: tailwindReset },
   { rel: 'stylesheet', href: globalStyles },
