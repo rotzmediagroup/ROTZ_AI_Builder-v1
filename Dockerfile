@@ -55,6 +55,8 @@ ENV WRANGLER_SEND_METRICS=false \
 RUN mkdir -p /root/.config/.wrangler && \
     echo '{"enabled":false}' > /root/.config/.wrangler/metrics.json
 
+# Increase Node heap for build to prevent OOM during Vite/Remix bundling
+ENV NODE_OPTIONS=--max-old-space-size=4096
 RUN pnpm run build
 
 # Use remix-serve with Node, expose 3000
