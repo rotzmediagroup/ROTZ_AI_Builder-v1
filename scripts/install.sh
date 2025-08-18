@@ -212,8 +212,20 @@ print_summary_local(){
 }
 
 prompt_mode(){
+  # Priority: CLI flag > ENV var > interactive prompt > default docker
+  local arg_mode="${1:-}"
+  if [[ "$arg_mode" == "--docker" || "$arg_mode" == "-d" ]]; then echo "docker"; return; fi
+  if [[ "$arg_mode" == "--local" || "$arg_mode" == "-l" ]]; then echo "local"; return; fi
+  if [[ -n "${INSTALL_MODE:-}" ]]; then
+    case "${INSTALL_MODE,,}" in
+      docker) echo "docker"; return ;;
+      local) echo "local"; return ;;
+    esac
+  fi
+  # Non-interactive shells: default to docker
+  if [[ ! -t 0 ]]; then echo "docker"; return; fi
   echo -n "Install using Docker (recommended) or Local? [D/l]: "
-  read -r choice
+  read -r choice || true
   case "${choice,,}" in
     l|local) echo "local" ;;
     d|docker|"") echo "docker" ;;
@@ -223,7 +235,7 @@ prompt_mode(){
 
 main(){
   info "Starting ROTZ installer"
-  mode=$(prompt_mode)
+  mode=$(prompt_mode "${1:-}")
   ensure_data_dir
   choose_port
 
