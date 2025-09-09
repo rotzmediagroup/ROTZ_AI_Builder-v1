@@ -59,6 +59,7 @@ You can set these in `.env.local` (used by docker-compose) or pass via environme
   - OLLAMA_API_BASE_URL (e.g., `http://host.docker.internal:11434` or your LAN host)
   - OPENAI_LIKE_API_BASE_URL
   - TOGETHER_API_BASE_URL
+  - OPENAI_CODEX_API_BASE_URL
 - App tuning (optional):
   - VITE_LOG_LEVEL (default: `debug`)
   - DEFAULT_NUM_CTX (default: `32768`)
