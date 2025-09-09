@@ -13,6 +13,7 @@ import { OpenRouterStatusChecker } from './providers/openrouter';
 import { PerplexityStatusChecker } from './providers/perplexity';
 import { TogetherStatusChecker } from './providers/together';
 import { XAIStatusChecker } from './providers/xai';
+import { OpenAIStatusChecker } from './providers/openai';
 
 export class ProviderStatusCheckerFactory {
   private static _providerConfigs: Record<ProviderName, ProviderConfig> = {
@@ -64,6 +65,20 @@ export class ProviderStatusCheckerFactory {
       headers: {},
       testModel: 'mistral-tiny',
     },
+    OpenAI: {
+      statusUrl: 'https://status.openai.com/',
+      apiUrl: 'https://api.openai.com/v1/models',
+      headers: {},
+      testModel: 'gpt-3.5-turbo',
+    },
+    'OpenAI Codex': {
+      statusUrl: '',
+      apiUrl: process.env.OPENAI_CODEX_API_BASE_URL
+        ? `${process.env.OPENAI_CODEX_API_BASE_URL}/v1/models`
+        : '',
+      headers: {},
+      testModel: 'code-davinci-002',
+    },
     OpenRouter: {
       statusUrl: 'https://status.openrouter.ai/',
       apiUrl: 'https://openrouter.ai/api/v1/models',
@@ -114,6 +129,9 @@ export class ProviderStatusCheckerFactory {
         return new HyperbolicStatusChecker(config);
       case 'Mistral':
         return new MistralStatusChecker(config);
+      case 'OpenAI':
+      case 'OpenAI Codex':
+        return new OpenAIStatusChecker(config);
       case 'OpenRouter':
         return new OpenRouterStatusChecker(config);
       case 'Perplexity':

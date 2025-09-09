@@ -27,6 +27,7 @@ type ProviderName =
   | 'Hyperbolic'
   | 'Mistral'
   | 'OpenAI'
+  | 'OpenAI Codex'
   | 'OpenRouter'
   | 'Perplexity'
   | 'Together'
@@ -44,6 +45,7 @@ const PROVIDER_ICONS: Record<ProviderName, IconType> = {
   Hyperbolic: TbCloudComputing,
   Mistral: TbBrain,
   OpenAI: SiOpenai,
+  'OpenAI Codex': SiOpenai,
   OpenRouter: FaCloud,
   Perplexity: SiPerplexity,
   Together: BsCloud,
@@ -54,6 +56,7 @@ const PROVIDER_ICONS: Record<ProviderName, IconType> = {
 const PROVIDER_DESCRIPTIONS: Partial<Record<ProviderName, string>> = {
   Anthropic: 'Access Claude and other Anthropic models',
   OpenAI: 'Use GPT-4, GPT-3.5, and other OpenAI models',
+  'OpenAI Codex': 'Use OpenAI Codex via local CLI endpoint',
 };
 
 const CloudProvidersTab = () => {

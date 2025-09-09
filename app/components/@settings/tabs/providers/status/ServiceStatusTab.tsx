@@ -23,6 +23,7 @@ type ProviderName =
   | 'HuggingFace'
   | 'Mistral'
   | 'OpenAI'
+  | 'OpenAI Codex'
   | 'OpenRouter'
   | 'Perplexity'
   | 'Together'
@@ -72,6 +73,12 @@ const PROVIDER_STATUS_URLS: Record<ProviderName, ProviderConfig> = {
       Authorization: 'Bearer $OPENAI_API_KEY',
     },
     testModel: 'gpt-3.5-turbo',
+  },
+  'OpenAI Codex': {
+    statusUrl: '',
+    apiUrl: '',
+    headers: {},
+    testModel: 'code-davinci-002',
   },
   Anthropic: {
     statusUrl: 'https://status.anthropic.com/',
@@ -181,6 +188,7 @@ const PROVIDER_ICONS: Record<ProviderName, IconType> = {
   HuggingFace: SiHuggingface,
   Mistral: TbBrain,
   OpenAI: SiOpenai,
+  'OpenAI Codex': SiOpenai,
   OpenRouter: FaCloud,
   Perplexity: SiPerplexity,
   Together: BsCloud,
@@ -206,7 +214,7 @@ const ServiceStatusTab = () => {
       }
 
       // Map provider names to environment variable names
-      const envKeyMap: Record<ProviderName, string> = {
+      const envKeyMap: Partial<Record<ProviderName, string>> = {
         OpenAI: 'OPENAI_API_KEY',
         Anthropic: 'ANTHROPIC_API_KEY',
         Cohere: 'COHERE_API_KEY',
@@ -256,12 +264,22 @@ const ServiceStatusTab = () => {
     // Handle special cases for providers with base URLs
     let updatedConfig = { ...config };
     const togetherBaseUrl = import.meta.env.TOGETHER_API_BASE_URL;
+    const codexBaseUrl = import.meta.env.OPENAI_CODEX_API_BASE_URL;
 
     if (provider === 'Together' && togetherBaseUrl) {
       updatedConfig = {
         ...config,
         apiUrl: `${togetherBaseUrl}/models`,
       };
+    } else if (provider === 'OpenAI Codex') {
+      if (codexBaseUrl) {
+        updatedConfig = {
+          ...config,
+          apiUrl: `${codexBaseUrl}/v1/models`,
+        };
+      } else {
+        return null;
+      }
     }
 
     return updatedConfig;
@@ -498,16 +516,26 @@ const ServiceStatusTab = () => {
           const apiKey = getApiKey(provider);
           const providerConfig = getProviderConfig(provider);
 
-          if (!apiKey || !providerConfig) {
+          if (!providerConfig) {
             return {
               provider,
               status: 'operational',
               lastChecked: new Date().toISOString(),
               statusUrl: config.statusUrl,
               icon: PROVIDER_ICONS[provider],
-              message: !apiKey
-                ? 'Status operational (API key needed for usage)'
-                : 'Status operational (configuration needed for usage)',
+              message: 'Status operational (configuration needed for usage)',
+              incidents: [],
+            };
+          }
+
+          if (provider !== 'OpenAI Codex' && !apiKey) {
+            return {
+              provider,
+              status: 'operational',
+              lastChecked: new Date().toISOString(),
+              statusUrl: config.statusUrl,
+              icon: PROVIDER_ICONS[provider],
+              message: 'Status operational (API key needed for usage)',
               incidents: [],
             };
           }

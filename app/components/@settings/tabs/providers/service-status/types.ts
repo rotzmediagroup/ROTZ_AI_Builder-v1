@@ -9,6 +9,8 @@ export type ProviderName =
   | 'HuggingFace'
   | 'Hyperbolic'
   | 'Mistral'
+  | 'OpenAI'
+  | 'OpenAI Codex'
   | 'OpenRouter'
   | 'Perplexity'
   | 'Together'
